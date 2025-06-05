@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Роман - Индивидуальные занятия йогой в Тбилиси</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+            cursor: none;
+            line-height: 1.6;
+        }
+
+        .quantum-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #40e0d0;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: difference;
+            transition: transform 0.1s ease;
+            box-shadow: 0 0 20px #40e0d0;
+        }
+
+        .section {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 2rem;
+        }
+
+        .quantum-foam {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .crystal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 6vw, 4rem);
+            font-weight: 400;
+            text-align: center;
+            background: linear-gradient(45deg, #4169e1, #9370db, #40e0d0, #ff69b4);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: prismaticShift 4s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(64, 224, 208, 0.5);
+            letter-spacing: 0.05em;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .crystal-subtitle {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            margin: 1rem 0 3rem;
+            text-align: center;
+            color: #b19cd9;
+            opacity: 0.9;
+            animation: subtleGlow 3s ease-in-out infinite alternate;
+            max-width: 800px;
+            font-weight: 300;
+            line-height: 1.5;
+        }
+
+        .crystal-buttons {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .crystal-btn {
+            padding: 1rem 2rem;
+            background: rgba(64, 224, 208, 0.1);
+            border: 2px solid #40e0d0;
+            color: #40e0d0;
+            text-decoration: none;
+            border-radius: 0;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            clip-path: polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%);
+            cursor: none;
+            font-weight: 400;
+        }
+
+        .crystal-btn:hover {
+            background: rgba(64, 224, 208, 0.3);
+            box-shadow: 0 0 30px #40e0d0;
+            transform: scale(1.05);
+        }
+
+        .crystal-btn.whatsapp {
+            border-color: #25d366;
+            color: #25d366;
+        }
+
+        .crystal-btn.whatsapp:hover {
+            background: rgba(37, 211, 102, 0.3);
+            box-shadow: 0 0 30px #25d366;
+        }
+
+        .crystal-btn.telegram {
+            border-color: #0088cc;
+            color: #0088cc;
+        }
+
+        .crystal-btn.telegram:hover {
+            background: rgba(0, 136, 204, 0.3);
+            box-shadow: 0 0 30px #0088cc;
+        }
+
+        .cuboid-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .cuboid {
+            position: absolute;
+            width: 150px;
+            height: 100px;
+            transform-style: preserve-3d;
+            animation: floatRotate 20s linear infinite;
+            pointer-events: all;
+            cursor: none;
+        }
+
+        .cuboid:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .cuboid:nth-child(2) {
+            top: 60%;
+            right: 15%;
+            animation-delay: -7s;
+        }
+
+        .cuboid:nth-child(3) {
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            animation-delay: -14s;
+        }
+
+        .cuboid-face {
+            position: absolute;
+            width: 150px;
+            height: 100px;
+            background: linear-gradient(45deg, rgba(64, 224, 208, 0.2), rgba(147, 112, 219, 0.2));
+            border: 1px solid rgba(64, 224, 208, 0.5);
+            backdrop-filter: blur(10px);
+            transition: all 0.5s ease;
+        }
+
+        .cuboid:nth-child(1) .front {
+            background: url('https://raw.githubusercontent.com/Ramashery/VizYo/main/images/F60jjkMDJz0.jpg') center/cover;
+            border: none;
+        }
+
+        .cuboid-face.front { transform: translateZ(50px); }
+        .cuboid-face.back { transform: translateZ(-50px) rotateY(180deg); }
+        .cuboid-face.right { transform: rotateY(90deg) translateZ(50px); }
+        .cuboid-face.left { transform: rotateY(-90deg) translateZ(50px); }
+        .cuboid-face.top { transform: rotateX(90deg) translateZ(50px); }
+        .cuboid-face.bottom { transform: rotateX(-90deg) translateZ(50px); }
+
+        .cuboid:hover .cuboid-face {
+            background: linear-gradient(45deg, rgba(64, 224, 208, 0.6), rgba(255, 105, 180, 0.6));
+            box-shadow: 0 0 30px rgba(64, 224, 208, 0.8);
+        }
+
+        .cuboid:nth-child(1):hover .front {
+            background: url('https://raw.githubusercontent.com/Ramashery/VizYo/main/images/F60jjkMDJz0.jpg') center/cover;
+            box-shadow: 0 0 30px rgba(64, 224, 208, 0.8);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            width: 100%;
+            padding: 2rem;
+        }
+
+        .service-crystal {
+            background: rgba(64, 224, 208, 0.05);
+            border: 1px solid rgba(64, 224, 208, 0.3);
+            padding: 2rem;
+            text-align: center;
+            clip-path: polygon(0 10%, 90% 0, 100% 90%, 10% 100%);
+            transition: all 0.5s ease;
+            cursor: none;
+        }
+
+        .service-crystal:hover {
+            background: rgba(64, 224, 208, 0.15);
+            transform: scale(1.03);
+            box-shadow: 0 0 40px rgba(64, 224, 208, 0.4);
+        }
+
+        .service-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #40e0d0;
+            font-weight: 500;
+        }
+
+        .service-description {
+            font-size: 1rem;
+            color: #e0e0e0;
+            font-weight: 300;
+        }
+
+        .portfolio-message {
+            text-align: center;
+            max-width: 800px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #b19cd9;
+            margin-bottom: 3rem;
+        }
+
+        .price-section {
+            text-align: center;
+            margin-top: 3rem;
+            font-size: 1.5rem;
+            color: #40e0d0;
+            font-weight: 500;
+        }
+
+        .price-amount {
+            font-size: 2rem;
+            font-weight: 500;
+            color: #fff;
+            margin: 0.5rem 0;
+        }
+
+        @keyframes prismaticShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes subtleGlow {
+            0% { text-shadow: 0 0 10px rgba(177, 156, 217, 0.5); }
+            100% { text-shadow: 0 0 20px rgba(177, 156, 217, 0.8); }
+        }
+
+        @keyframes floatRotate {
+            0% { transform: translateY(0) rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+            25% { transform: translateY(-20px) rotateX(90deg) rotateY(90deg) rotateZ(45deg); }
+            50% { transform: translateY(0) rotateX(180deg) rotateY(180deg) rotateZ(90deg); }
+            75% { transform: translateY(20px) rotateX(270deg) rotateY(270deg) rotateZ(135deg); }
+            100% { transform: translateY(0) rotateX(360deg) rotateY(360deg) rotateZ(180deg); }
+        }
+
+        @keyframes particleFloat {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            33% { transform: translateY(-30px) translateX(20px); }
+            66% { transform: translateY(30px) translateX(-20px); }
+        }
+
+        @media (max-width: 768px) {
+            .crystal-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+            
+            .cuboid {
+                width: 100px;
+                height: 67px;
+            }
+            
+            .cuboid-face {
+                width: 100px;
+                height: 67px;
+            }
+            
+            .section {
+                padding: 1rem;
+            }
+            
+            .crystal-title {
+                font-size: 2.5rem;
+            }
+            
+            .crystal-subtitle {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quantum-cursor"></div>
+    <canvas class="quantum-foam"></canvas>
+
+    <!-- Hero Section -->
+    <section class="section">
+        <div class="cuboid-container">
+            <div class="cuboid">
+                <div class="cuboid-face front"></div>
+                <div class="cuboid-face back"></div>
+                <div class="cuboid-face right"></div>
+                <div class="cuboid-face left"></div>
+                <div class="cuboid-face top"></div>
+                <div class="cuboid-face bottom"></div>
+            </div>
+            <div class="cuboid">
+                <div class="cuboid-face front"></div>
+                <div class="cuboid-face back"></div>
+                <div class="cuboid-face right"></div>
+                <div class="cuboid-face left"></div>
+                <div class="cuboid-face top"></div>
+                <div class="cuboid-face bottom"></div>
+            </div>
+            <div class="cuboid">
+                <div class="cuboid-face front"></div>
+                <div class="cuboid-face back"></div>
+                <div class="cuboid-face right"></div>
+                <div class="cuboid-face left"></div>
+                <div class="cuboid-face top"></div>
+                <div class="cuboid-face bottom"></div>
+            </div>
+        </div>
+        
+        <h1 class="crystal-title">Меня зовут Роман</h1>
+        <p class="crystal-subtitle">Я провожу индивидуальные занятия по йоге в Тбилиси</p>
+        
+        <div class="crystal-buttons">
+            <a href="https://wa.me/+79119396075" class="crystal-btn whatsapp">WhatsApp</a>
+            <a href="https://t.me/ramashery" class="crystal-btn telegram">Telegram</a>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="section">
+        <h2 class="crystal-title" style="font-size: 2.5rem; margin-bottom: 3rem;">Эти занятия для вас если:</h2>
+        
+        <div class="services-grid">
+            <div class="service-crystal">
+                <h3 class="service-title">Выносливость и сила</h3>
+                <p class="service-description">Вы желаете увеличить выносливость, силу и гибкость, вылечить ноющую поясницу</p>
+            </div>
+            
+            <div class="service-crystal">
+                <h3 class="service-title">Нервная система</h3>
+                <p class="service-description">Хотите научиться тормозить или разгонять нервную систему, чтобы при необходимости успокаиваться или напротив, быстро возвращаться в рабочее состояние</p>
+            </div>
+            
+            <div class="service-crystal">
+                <h3 class="service-title">Дыхание</h3>
+                <p class="service-description">Хотите освоить дыхательные упражнения увеличивающие объем легких и силу дыхательной мускулатуры</p>
+            </div>
+            
+            <div class="service-crystal">
+                <h3 class="service-title">Контроль веса</h3>
+                <p class="service-description">Хотите лучше контролировать вес тела, с помощью правильно подобранного тренировочного режима</p>
+            </div>
+            
+            <div class="service-crystal">
+                <h3 class="service-title">Релаксация</h3>
+                <p class="service-description">Нужно сбросить накопившееся в рабочее время напряжение и глубоко отдохнуть</p>
+            </div>
+            
+            <div class="service-crystal">
+                <h3 class="service-title">Персональный тренер</h3>
+                <p class="service-description">Могу стать вашим персональным тренером йоги и избавить от необходимости посещать фитнес клубы и йога-студии</p>
+            </div>
+            
+            <div class="service-crystal">
+                <h3 class="service-title">Индивидуальная программа</h3>
+                <p class="service-description">Программу для индивидуальных тренировок составляю учитывая ваш исходный уровень и запрос, в который обычно включают пожелания к своему внешнему виду, симметрии и расширению возможностей своего тела в выносливости, гибкости</p>
+            </div>
+            
+            <div class="service-crystal">
+                <h3 class="service-title">Персонализированный подход</h3>
+                <p class="service-description">В процессе занятия, я выясняю какие движения вам трудны или неприятны, определяю подвижность позвоночника и суставов, тестирую мышечные группы на равновесие, силу, эластичность и подбираю упражнения компенсирующие особенности вашего опорно-двигательного аппарата</p>
+            </div>
+            
+            <div class="service-crystal">
+                <h3 class="service-title">Теоретическая база</h3>
+                <p class="service-description">Кроме того, во время своих занятий я даю и полезный теоретический материал, то есть доступным языком объясняю "как это работает". В перспективе вы сможете использовать эти знания для самостоятельных тренировок</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Price Section -->
+    <section class="section">
+        <div class="price-section">
+            Стоимость одного занятия
+        </div>
+        <div class="price-amount">
+            70 ₾
+        </div>
+        <p class="portfolio-message">
+            Покупку абонементов и другие возможности получения скидок можно обсудить со мной
+        </p>
+        
+        <div class="crystal-buttons">
+            <a href="https://wa.me/+79119396075" class="crystal-btn whatsapp">WhatsApp</a>
+            <a href="https://t.me/ramashery" class="crystal-btn telegram">Telegram</a>
+        </div>
+    </section>
+
+    <script>
+        // Quantum Particle System
+        class QuantumParticle {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.superposition = [Math.random(), Math.random()];
+                this.entangled = null;
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 2;
+                this.vy = (Math.random() - 0.5) * 2;
+                this.size = Math.random() * 3 + 1;
+                this.hue = Math.random() * 360;
+                this.opacity = Math.random() * 0.8 + 0.2;
+                this.connections = [];
+            }
+
+            collapse() {
+                const sum = this.superposition[0] + this.superposition[1];
+                const rand = Math.random() * sum;
+                return rand < this.superposition[0] ? 0 : 1;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > this.canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > this.canvas.height) this.vy *= -1;
+
+                this.hue += 0.5;
+                if (this.hue > 360) this.hue = 0;
+
+                // Quantum superposition effect
+                this.superposition[0] += (Math.random() - 0.5) * 0.01;
+                this.superposition[1] += (Math.random() - 0.5) * 0.01;
+            }
+
+            draw() {
+                this.ctx.save();
+                this.ctx.globalAlpha = this.opacity;
+                
+                // Create radial gradient
+                const gradient = this.ctx.createRadialGradient(
+                    this.x, this.y, 0,
+                    this.x, this.y, this.size * 3
+                );
+                gradient.addColorStop(0, `hsla(${this.hue}, 70%, 60%, 0.8)`);
+                gradient.addColorStop(1, `hsla(${this.hue}, 70%, 60%, 0)`);
+                
+                this.ctx.fillStyle = gradient;
+                this.ctx.beginPath();
+                this.ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // Core particle
+                this.ctx.fillStyle = `hsl(${this.hue}, 70%, 80%)`;
+                this.ctx.beginPath();
+                this.ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                this.ctx.restore();
+            }
+
+            drawConnections(particles) {
+                this.connections = [];
+                particles.forEach(particle => {
+                    if (particle !== this) {
+                        const dx = particle.x - this.x;
+                        const dy = particle.y - this.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance < 150) {
+                            this.connections.push(particle);
+                            this.ctx.save();
+                            this.ctx.globalAlpha = (150 - distance) / 150 * 0.3;
+                            this.ctx.strokeStyle = `hsl(${(this.hue + particle.hue) / 2}, 50%, 50%)`;
+                            this.ctx.lineWidth = 1;
+                            this.ctx.beginPath();
+                            this.ctx.moveTo(this.x, this.y);
+                            this.ctx.lineTo(particle.x, particle.y);
+                            this.ctx.stroke();
+                            this.ctx.restore();
+                        }
+                    }
+                });
+            }
+        }
+
+        // Initialize Quantum Foam
+        const canvas = document.querySelector('.quantum-foam');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let mouseX = 0, mouseY = 0;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        function initParticles() {
+            particles = [];
+            const particleCount = Math.min(100, Math.floor((canvas.width * canvas.height) / 10000));
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new QuantumParticle(canvas));
+            }
+        }
+
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+                particle.drawConnections(particles);
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        // Custom Cursor
+        const cursor = document.querySelector('.quantum-cursor');
+        
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursor.style.left = mouseX - 10 + 'px';
+            cursor.style.top = mouseY - 10 + 'px';
+            
+            // Quantum decoherence effect
+            particles.forEach(particle => {
+                const dx = mouseX - particle.x;
+                const dy = mouseY - particle.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 100) {
+                    particle.vx += dx * 0.0001;
+                    particle.vy += dy * 0.0001;
+                    particle.hue += 5;
+                }
+            });
+        });
+
+        // Touch/Click Effects
+        document.addEventListener('click', (e) => {
+            const clickX = e.clientX;
+            const clickY = e.clientY;
+            
+            // Create quantum burst effect
+            for (let i = 0; i < 10; i++) {
+                const burstParticle = new QuantumParticle(canvas);
+                burstParticle.x = clickX;
+                burstParticle.y = clickY;
+                burstParticle.vx = (Math.random() - 0.5) * 10;
+                burstParticle.vy = (Math.random() - 0.5) * 10;
+                burstParticle.size = Math.random() * 5 + 2;
+                particles.push(burstParticle);
+            }
+            
+            // Remove excess particles
+            if (particles.length > 150) {
+                particles.splice(0, particles.length - 150);
+            }
+        });
+
+        // Cuboid Interactions
+        document.querySelectorAll('.cuboid').forEach((cuboid, index) => {
+            cuboid.addEventListener('click', () => {
+                // Quantum expansion effect
+                cuboid.style.transform = 'scale(1.5)';
+                cuboid.style.transition = 'transform 0.5s ease';
+                
+                setTimeout(() => {
+                    cuboid.style.transform = '';
+                }, 500);
+                
+                // Create ripple effect
+                const rect = cuboid.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                for (let i = 0; i < 20; i++) {
+                    const rippleParticle = new QuantumParticle(canvas);
+                    rippleParticle.x = centerX;
+                    rippleParticle.y = centerY;
+                    const angle = (Math.PI * 2 * i) / 20;
+                    rippleParticle.vx = Math.cos(angle) * 5;
+                    rippleParticle.vy = Math.sin(angle) * 5;
+                    rippleParticle.hue = 180 + index * 60;
+                    particles.push(rippleParticle);
+                }
+            });
+        });
+
+        // Device Motion (for mobile)
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener('deviceorientation', (e) => {
+                const tiltX = e.beta * 0.1; // -180 to 180
+                const tiltY = e.gamma * 0.1; // -90 to 90
+                
+                particles.forEach(particle => {
+                    particle.vx += tiltX * 0.001;
+                    particle.vy += tiltY * 0.001;
+                });
+            });
+        }
+
+        // Smooth scrolling with parallax
+        let scrollY = 0;
+        window.addEventListener('scroll', () => {
+            scrollY = window.scrollY;
+            
+            // Parallax effect for cuboids
+            document.querySelectorAll('.cuboid').forEach((cuboid, index) => {
+                const speed = (index + 1) * 0.5;
+                cuboid.style.transform += ` translateY(${scrollY * speed}px)`;
+            });
+        });
+
+        // Initialize everything
+        resizeCanvas();
+        initParticles();
+        animate();
+
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            initParticles();
+        });
+
+        // Hide cursor on mobile
+        if ('ontouchstart' in window) {
+            cursor.style.display = 'none';
+            document.body.style.cursor = 'auto';
+        }
+    </script>
+</body>
+</html>
