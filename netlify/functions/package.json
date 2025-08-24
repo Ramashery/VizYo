@@ -1,0 +1,12 @@
+{
+  "name": "digital-craft-functions",
+  "version": "1.0.0",
+  "description": "Netlify Functions for Digital Craft website",
+  "main": "render.js",
+  "dependencies": {
+    "firebase-admin": "^11.11.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

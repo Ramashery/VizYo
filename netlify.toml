@@ -1,5 +1,10 @@
 # --- Единый конфигурационный файл netlify.toml ---
 
+# Настройки функций
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
 # Правило для эффективного кэширования статических ресурсов (CSS, JS, картинки)
 # Ускоряет загрузку сайта для повторных посетителей.
 [[headers]]
@@ -7,6 +12,29 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# Заголовки для HTML страниц
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+    X-Robots-Tag = "index, follow"
+
+# Заголовки для CSS и JS файлов
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Заголовки для изображений
+[[headers]]
+  for = "/*.(jpg|jpeg|png|gif|webp|svg|ico)"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
 
 # --- Правила для редиректов ---
 # Убирают слэш в конце URL для SEO и единообразия.
@@ -23,4 +51,42 @@
   from = "/:lang/"
   to = "/:lang"
   status = 301
+  force = true
+
+# --- Правила для MPA ---
+# Обработка динамических маршрутов через Netlify Functions
+
+# Главная страница
+[[redirects]]
+  from = "/"
+  to = "/.netlify/functions/render"
+  status = 200
+  force = true
+
+# Детальные страницы с языком
+[[redirects]]
+  from = "/:lang/:section/:slug"
+  to = "/.netlify/functions/render"
+  status = 200
+  force = true
+
+# Детальные страницы без языка
+[[redirects]]
+  from = "/:section/:slug"
+  to = "/.netlify/functions/render"
+  status = 200
+  force = true
+
+# Статические файлы (CSS, JS, изображения) не должны обрабатываться функциями
+[[redirects]]
+  from = "/*.(css|js|png|jpg|jpeg|gif|svg|ico|webp|woff|woff2|ttf|eot)"
+  to = "/:splat"
+  status = 200
+  force = true
+
+# Файлы функций не должны обрабатываться как страницы
+[[redirects]]
+  from = "/.netlify/functions/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
   force = true
