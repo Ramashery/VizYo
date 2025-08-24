@@ -1,6 +1,5 @@
 const admin = require('firebase-admin');
 
-// Инициализация Firebase Admin SDK
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert({
@@ -14,7 +13,6 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 
-// Функция для получения данных из Firebase
 async function getSiteData() {
   try {
     const [homeDoc, servicesSnapshot, portfolioSnapshot, blogSnapshot, contactSnapshot] = await Promise.all([
@@ -53,7 +51,6 @@ async function getSiteData() {
   }
 }
 
-// Функция для форматирования контента
 function formatContentHtml(content) {
   if (!content) return '';
   let processedContent = content.replace(/\r\n/g, '\n');
@@ -82,7 +79,6 @@ function formatContentHtml(content) {
   return html;
 }
 
-// Функция для генерации HTML страницы
 function generatePageHTML(data, path, item = null) {
   const isDetailPage = item !== null;
   const pageData = isDetailPage ? item : data.home;
@@ -135,16 +131,13 @@ function generatePageHTML(data, path, item = null) {
     
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
 
-    <!-- Critical CSS -->
     <style>
         :root {
             --color-bg: #030409;
@@ -184,7 +177,6 @@ function generatePageHTML(data, path, item = null) {
         @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 
-    <!-- Async CSS -->
     <link rel="stylesheet" href="/styles.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="/styles.css"></noscript>
 </head>
@@ -210,10 +202,8 @@ function generatePageHTML(data, path, item = null) {
     
     <footer class="site-footer" id="site-footer"></footer>
     
-    <!-- Main Script -->
     <script type="module" src="/main.js"></script>
     
-    <!-- Yandex Metrika -->
     <script type="text/javascript">
         function loadYandexMetrika() {
             (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
@@ -235,7 +225,6 @@ function generatePageHTML(data, path, item = null) {
 </html>`;
 }
 
-// Функция для генерации контента главной страницы
 function generateHomePageContent(data) {
   const { home, services, portfolio, blog, contact } = data;
   
@@ -253,7 +242,6 @@ function generateHomePageContent(data) {
   return heroContent + servicesContent + portfolioContent + blogContent + contactContent;
 }
 
-// Функция для генерации контента секций
 function generateSectionContent(key, title, items) {
   if (!items || items.length === 0) return '';
   
@@ -338,7 +326,6 @@ function generateSectionContent(key, title, items) {
   </section>`;
 }
 
-// Функция для генерации контента детальной страницы
 function generateDetailPageContent(item, data) {
   const formattedContent = formatContentHtml(item.mainContent);
   
@@ -354,7 +341,6 @@ function generateDetailPageContent(item, data) {
   ${relatedItems}`;
 }
 
-// Функция для генерации связанных постов
 function generateRelatedPosts(currentItem, data) {
   const pool = [
     ...data.services.map(i => ({ ...i, collection: 'services' })),
@@ -387,15 +373,12 @@ function generateRelatedPosts(currentItem, data) {
   </section>`;
 }
 
-// Основная функция обработчика
 exports.handler = async (event, context) => {
   try {
     const path = event.path;
     
-    // Получаем данные из Firebase
     const siteData = await getSiteData();
     
-    // Определяем тип страницы
     const detailPageRegex = /^\/(?:([a-z]{2})\/)?(services|portfolio|blog|contact)\/([a-zA-Z0-9-]+)\/?$/;
     const match = path.match(detailPageRegex);
     
@@ -417,7 +400,6 @@ exports.handler = async (event, context) => {
       }
     }
     
-    // Генерируем HTML
     const html = generatePageHTML(siteData, path, item);
     
     return {
